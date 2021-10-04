@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+   <title>Chat cùng Qiz</title>
+ <style>
+       * {
+     padding: 0px;
+     margin: 0px;
+     margin-top: 10px;
+     max-width: 500px;
+   }
+   body {
+      background: skyblue;
+   }
+      h1 {
+         text-align: center;
+         color: red;
+      };
+      li {
+         display: block;
+         text-align: center;
+         
+      }
+      #root {
+         display:block;
+         margin: auto;
+         max-width: 300px;
+         height: 100%;
+         border: solid;
+         background: pink;
+         word-wrap:break-word;
+       
+      }
+      #chat-form {
+         text-align:center;
+         position: relative;
+         display:block;
+         margin-bottom: 20px;
+      }
+
+      
+ </style>
+</head>
+<body>
+   <h1>Chat Menu</h1>
+   <div id="root">
+   <div class="box">
+   <ul id="messages"></ul>
+   
+   </div>
+   </div>
+   <form id="chat-form">
+      <input type="text" id="chat-mes">
+      <button id="send-chat">Gửi</button>
+   </form>
+</body>
+   <script src="/socket.io/socket.io.js"></script>
+   <script>
+      const socket = io();
+      const chatForm = document.querySelector('#chat-form');
+      const name = prompt('Tên bạn là gì ?')
+      const chatMes =document.querySelector('#chat-mes');
+      chatForm.addEventListener('submit', (e) => {
+         e.preventDefault();
+         
+         const message = chatMes.value;
+         socket.emit('on-chat', { 
+            name,
+            message
+          });
+          chatMes.value = ""
+      })
+      
+      const messages = document.querySelector('#messages')
+      socket.on('user-chat', (message) => {
+         
+       const chatItem = document.createElement('li')
+         chatItem.innerHTML =
+ `${message.name}: ${message.message}`
+         messages.appendChild(chatItem)
+      })
+
+//require name
+if(name === null || name  =='' || name === undefined) {
+      location.reload()
+      alert('nhập tên bạn êii!')
+      }
+   </script>
+</html>
